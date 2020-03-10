@@ -62,14 +62,14 @@ module Kemal
         @sessions_dir = uninitialized String
         @sessions_dir = options[:sessions_dir]
         @cache = StorageInstance.new
-        @cached_session_read_time = Time.utc_now
+        @cached_session_read_time = Time.local
         @cached_session_id = ""
       end
 
       def run_gc
         each_session do |session|
           full_path = session_filename(session.id)
-          age = Time.utc_now - File.info(full_path).modification_time # mtime is always saved in utc
+          age = Time.local - File.info(full_path).modification_time # mtime is always saved in utc
           session.destroy if age.total_seconds > Session.config.timeout.total_seconds
         end
       end
@@ -85,8 +85,8 @@ module Kemal
       end
 
       def is_in_cache?(session_id : String) : Bool
-        if (@cached_session_read_time.to_unix / 60) < (Time.utc_now.to_unix / 60)
-          @cached_session_read_time = Time.utc_now
+        if (@cached_session_read_time.to_unix / 60) < (Time.local.to_unix / 60)
+          @cached_session_read_time = Time.local
           begin
             File.utime(Time.local, Time.local, session_filename(session_id))
           rescue ex
@@ -110,7 +110,7 @@ module Kemal
           end
         end
         instance = StorageInstance.new
-        @cached_session_read_time = Time.utc_now
+        @cached_session_read_time = Time.local
         File.write(session_filename(session_id), instance.to_json)
         return instance
       end
