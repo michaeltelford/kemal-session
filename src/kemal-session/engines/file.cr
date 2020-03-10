@@ -88,7 +88,7 @@ module Kemal
         if (@cached_session_read_time.to_unix / 60) < (Time.utc_now.to_unix / 60)
           @cached_session_read_time = Time.utc_now
           begin
-            File.utime(Time.now, Time.now, session_filename(session_id))
+            File.utime(Time.local, Time.local, session_filename(session_id))
           rescue ex
             puts "Kemal-session cannot update time of a sesssion file. This may not be possible on your current file system"
           end

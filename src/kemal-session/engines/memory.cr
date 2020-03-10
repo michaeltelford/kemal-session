@@ -66,7 +66,7 @@ module Kemal
       end
 
       def run_gc
-        before = (Time.now - Kemal::Session.config.timeout.as(Time::Span)).to_unix_ms
+        before = (Time.local - Kemal::Session.config.timeout.as(Time::Span)).to_unix_ms
         @store.delete_if do |id, entry|
           last_access_at = Int64.from_json(entry, root: "last_access_at")
           last_access_at < before
