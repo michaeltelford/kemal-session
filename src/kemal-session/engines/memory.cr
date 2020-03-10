@@ -18,26 +18,26 @@ module Kemal
 
         {% for name, type in vars %}
           @{{name.id}}s = Hash(String, {{type}}).new
-          @last_access_at = Time.new.to_unix_ms
+          @last_access_at = Time.local.to_unix_ms
           getter {{name.id}}s
 
           def {{name.id}}(k : String) : {{type}}
-            @last_access_at = Time.new.to_unix_ms
+            @last_access_at = Time.local.to_unix_ms
             return @{{name.id}}s[k]
           end
 
           def {{name.id}}?(k : String) : {{type}}?
-            @last_access_at = Time.new.to_unix_ms
+            @last_access_at = Time.local.to_unix_ms
             return @{{name.id}}s[k]?
           end
 
           def {{name.id}}(k : String, v : {{type}})
-            @last_access_at = Time.new.to_unix_ms
+            @last_access_at = Time.local.to_unix_ms
             @{{name.id}}s[k] = v
           end
 
           def delete_{{name.id}}(k : String)
-            @last_access_at = Time.new.to_unix_ms
+            @last_access_at = Time.local.to_unix_ms
             @{{name.id}}s.delete(k) if @{{name.id}}s.has_key?(k)
           end
         {% end %}
